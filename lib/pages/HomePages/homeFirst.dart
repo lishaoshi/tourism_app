@@ -10,11 +10,38 @@ class HomeFirse extends StatefulWidget {
 }
 
 class _HomeFirseState extends State<HomeFirse> {
+  ScrollController _scrollController = ScrollController();
    List<String> _imageUrls = [
     'http://pages.ctrip.com/commerce/promote/20180718/yxzy/img/640sygd.jpg',
     'https://dimg04.c-ctrip.com/images/700u0r000000gxvb93E54_810_235_85.jpg',
     'https://dimg04.c-ctrip.com/images/700c10000000pdili7D8B_780_235_57.jpg'
   ];
+  double setOff = 100;
+  double opcityF = 0;
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _scrollController.addListener(() {
+      // print(_scrollController.offset);
+      if(_scrollController.offset<=0) {
+        setState(() {
+          opcityF=0;
+        });
+      } else if(_scrollController.offset>=setOff) {
+         setState(() {
+          opcityF=1;
+        });
+      } else {
+         setState(() {
+          opcityF=_scrollController.offset/setOff;
+        });
+      }
+     
+    });
+  }
   final SwiperControl _control = SwiperControl();
   @override
   Widget build(BuildContext context) {
@@ -25,6 +52,7 @@ class _HomeFirseState extends State<HomeFirse> {
         body: Stack(
           children: <Widget>[
             ListView(
+              controller: _scrollController,
               children: <Widget>[
                 Container(
                   height: 200,
@@ -43,13 +71,17 @@ class _HomeFirseState extends State<HomeFirse> {
                     autoplay: true,
                     control: _control
                   )
+                ),
+                Container(
+                  height: 1000,
+                  child: Text('123456')
                 )
               ],
             ),
-            Container(
+            Opacity(opacity: this.opcityF,child: Container(
               color: Colors.red,
               height: 100,
-            )
+            ),)
           ]
         )
       )
