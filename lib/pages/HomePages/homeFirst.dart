@@ -1,6 +1,15 @@
 
 import "package:flutter/material.dart";
 import 'package:flutter_swiper/flutter_swiper.dart';
+import '../../API/home_api.dart';
+import '../../model/home_model.dart';
+import '../../model/common_model.dart';
+
+import '../../model/grid_nav_model.dart';
+import '../../model/sales_box_model.dart';
+import '../../widget/local_nav.dart';
+
+
 
 class HomeFirse extends StatefulWidget {
   HomeFirse({Key key}) : super(key: key);
@@ -10,6 +19,14 @@ class HomeFirse extends StatefulWidget {
 }
 
 class _HomeFirseState extends State<HomeFirse> {
+  double appBarAlpha = 0;
+  List<CommonModel> bannerList = []; //轮播图列表
+  List<CommonModel> localNavList = []; //local导航
+  GridNavModel gridNav; //网格卡片
+  List<CommonModel> subNavList = []; //活动导航
+  SalesBoxModel salesBox; //salesBox数据
+  bool _loading = true; //页面加载状态
+  String city = '西安市';
   ScrollController _scrollController = ScrollController();
    List<String> _imageUrls = [
     'http://pages.ctrip.com/commerce/promote/20180718/yxzy/img/640sygd.jpg',
@@ -43,8 +60,22 @@ class _HomeFirseState extends State<HomeFirse> {
     });
   }
   final SwiperControl _control = SwiperControl();
+
+   getHomeData() async{
+    // final String url = '';
+    HomeModel model = await HomeApi.getHomeData();
+    setState(() {
+        bannerList = model.bannerList;
+        localNavList = model.localNavList;
+        gridNav = model.gridNav;
+        subNavList = model.subNavList;
+        salesBox = model.salesBox;
+        _loading = false;
+      });
+  }
   @override
   Widget build(BuildContext context) {
+    getHomeData();
     return MediaQuery.removePadding(
       context: context,
       removeTop: true, 
@@ -72,9 +103,15 @@ class _HomeFirseState extends State<HomeFirse> {
                     control: _control
                   )
                 ),
+                 Padding(
+                  padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                  child: LocalNav(
+                    localNavList: localNavList,
+                  ),
+                ),
                 Container(
                   height: 1000,
-                  child: Text('123456')
+                  child: Text('1234567')
                 )
               ],
             ),
